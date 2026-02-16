@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ============================ Navbar ============================ */
+.navbar-dark .navbar-nav .nav-link {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: white;
+    transition: all 0.3s ease-in-out;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .active {
+    color: yellow;
+    text-decoration: underline;
+}
+
+.navbar .btn-outline-warning,
+.navbar .btn-outline-light {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 700;
+}
+
+/* ============================ TopUp Bar ============================ */
+.bar-topUp p,
+.bar-topUp h5 {
+    font-family: "Titillium Web", sans-serif;
+}
+
+.bar-topUp img {
+    max-width: 80px;
+}
+
+/* ============================ Detail Movie ============================ */
+.details h3,
+.details p {
+    font-family: "Khmer OS", sans-serif;
+}
+
+.details button {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 600;
+}
+
+.detail-movies img {
+    border-radius: 5px;
+}
+
+/* ============================ Movies Grid ============================ */
+.movies-product .card {
+    background-color: #4e3e3e;
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.movies-product .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.movies-product .card-text {
+    color: white;
+    font-family: "Khmer OS", sans-serif;
+    text-align: center;
+    font-weight: 600;
+}
+
+.movies-product .card-text:hover {
+    color: yellow;
+    text-decoration: underline;
+}
+
+/* ============================ Banner ============================ */
+.banner img {
+    max-height: 600px;
+    object-fit: cover;
+}
+
+/* ============================ Responsive Adjustments ============================ */
+
+/* Mobile first: smaller than 768px */
+@media (max-width: 767px) {
+    .detail-movies {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .detail-movies img {
+        width: 100%;
+        height: auto;
+    }
+    .bar-topUp{
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        height: 150px !important;
+    }
+    .bar-topUp img{
+        width: 50px !important;
+    }
+
+    #topBtnbar{
+        margin-top: -60px;
+        
+    }
+    .bar-topUp .txt{
+        left: 20%;
+    }
+    .bar-topUp .txt p{
+        font-size: 13px !important;
+    }
+    .bar-topUp .txt h5{
+        font-size: 13px !important;
+    }
+    .movies-product .card img {
+        height: auto;
+    }
+}
+
+/* Tablet: 768px - 991px */
+@media (min-width: 768px) and (max-width: 991px) {
+    .detail-movies {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .movies-product .card {
+        margin-bottom: 20px;
+    }
+}
+
+/* Desktop: 992px and up */
+@media (min-width: 992px) {
+    .detail-movies {
+        flex-direction: row;
+        gap: 30px;
+    }
+}
