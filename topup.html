@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="km">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>បញ្ចូលទឹកប្រាក់ - Modern Payment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-brown: #3e2723;
+            --primary-yellow: #ffc107;
+            --secondary-yellow: #ffca28;
+            --dark-text: #263238;
+            --glass-yellow: rgba(255, 248, 225, 0.98);
+        }
+
+        body {
+            font-family: 'Kantumruy Pro', sans-serif;
+            background: radial-gradient(circle at center, #5d4037 0%, #2a1b19 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: var(--dark-text);
+        }
+
+        /* Card Animation */
+        .card-topup {
+            border: none;
+            border-radius: 30px;
+            background: var(--glass-yellow);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Loading Overlay */
+        #loader {
+            display: none;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ddd;
+            border-top: 5px solid var(--primary-yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Step Styles */
+        .step-content {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* QR Code Section */
+        #qr-section {
+            display: none;
+            text-align: center;
+        }
+
+        .qr-container {
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            display: inline-block;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            border: 5px solid var(--primary-yellow);
+        }
+
+        .qr-image {
+            width: 220px;
+            height: 220px;
+            object-fit: contain;
+        }
+
+        .header-accent {
+            background: var(--primary-yellow);
+            padding: 25px;
+            margin: -24px -24px 25px -24px;
+            border-radius: 0 0 40px 40px;
+        }
+
+        /* Button & Inputs */
+        .amount-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .amount-item input {
+            display: none;
+        }
+
+        .amount-label {
+            display: block;
+            background: #fff;
+            border: 2px solid #eee;
+            padding: 12px 5px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .amount-item input:checked+.amount-label {
+            background: var(--primary-yellow);
+            border-color: #ffa000;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-main {
+            background: linear-gradient(45deg, #ffc107, #ff9800);
+            border: none;
+            color: #3e2723;
+            font-weight: 800;
+            padding: 15px;
+            border-radius: 15px;
+            width: 100%;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.4);
+        }
+
+        .status-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card card-topup p-4">
+
+        <div id="form-section" class="step-content">
+            <div class="header-accent text-center">
+                <i class="fa-solid fa-bolt-lightning fa-2x mb-2"></i>
+                <h4 class="fw-bold m-0">TOP UP EXPRESS</h4>
+            </div>
+
+            <form id="topupForm">
+                <label class="form-label">លេខសម្គាល់គណនី</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text bg-white border-end-0" style="border-radius: 12px 0 0 12px;"><i
+                            class="fa-solid fa-id-card text-warning"></i></span>
+                    <input type="text" class="form-control border-start-0"
+                        style="border-radius: 0 12px 12px 0; padding: 12px;" placeholder="បញ្ចូលលេខ ID របស់អ្នក"
+                        required>
+                </div>
+
+                <label class="form-label">ជ្រើសរើសទឹកប្រាក់</label>
+                <div class="amount-grid mb-4">
+                    <div class="amount-item"><input type="radio" name="amt" id="v1" checked><label for="v1"
+                            class="amount-label">$1</label></div>
+                    <div class="amount-item"><input type="radio" name="amt" id="v5"><label for="v5"
+                            class="amount-label">$5</label></div>
+                    <div class="amount-item"><input type="radio" name="amt" id="v10"><label for="v10"
+                            class="amount-label">$10</label></div>
+                </div>
+
+                <label class="form-label">បង់ប្រាក់តាមរយៈ</label>
+                <select class="form-select mb-4" style="border-radius: 12px; padding: 12px;" id="payMethod">
+                    <option value="ABA Bank">ABA PAY</option>
+                    <option value="Wing">Wing Bank</option>
+                    <option value="Acleda">ACLEDA Mobile</option>
+                </select>
+
+                <button type="button" class="btn-main" onclick="startPayment()">បន្តទៅការបង់ប្រាក់ <i
+                        class="fa-solid fa-arrow-right ms-2"></i></button>
+            </form>
+        </div>
+
+        <div id="loader">
+            <div class="spinner"></div>
+            <h5>កំពុងបង្កើតលេខកូដបង់ប្រាក់...</h5>
+            <p class="text-muted small">សូមរង់ចាំមួយភ្លែត</p>
+        </div>
+
+        <div id="qr-section" class="step-content">
+            <div class="status-badge"><i class="fa-solid fa-lock me-1"></i> ការបង់ប្រាក់មានសុវត្ថិភាព</div>
+            <h4 class="fw-bold mb-1">ស្កែនដើម្បីបង់ប្រាក់</h4>
+            <p class="text-muted small">សូមប្រើកម្មវិធី <span id="methodName" class="fw-bold text-primary">ABA</span>
+                ដើម្បីស្កែន</p>
+
+            <div class="qr-container">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ABA_PAYMENT_DEMO" alt="QR Code"
+                    class="qr-image">
+            </div>
+
+            <div class="bg-light p-3 rounded-4 mb-4">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">ចំនួនត្រូវបង់:</span>
+                    <span class="fw-bold text-danger" id="displayAmount">$10.00</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">លេខប្រតិបត្តិការ:</span>
+                    <span class="fw-bold">#TRX99021</span>
+                </div>
+            </div>
+
+            <button class="btn-main" onclick="location.reload()">ខ្ញុំបានបង់ប្រាក់រួចរាល់</button>
+            <button class="btn btn-link btn-sm mt-3 text-decoration-none text-muted" onclick="back()">Back
+                Home</button>
+            <button class="btn btn-link btn-sm mt-3 text-decoration-none text-muted"
+                onclick="location.reload()">បោះបង់</button>
+        </div>
+
+    </div>
+
+    <script>
+        function back() {
+            window.location = 'index.html';
+        }
+
+        function startPayment() {
+            // 1. បិទ Form
+            document.getElementById('form-section').style.display = 'none';
+            // 2. បង្ហាញ Loader
+            document.getElementById('loader').style.display = 'block';
+
+            // 3. រង់ចាំ 2 វិនាទី (ធ្វើពុតជា Processing)
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('qr-section').style.display = 'block';
+
+                // បង្ហាញឈ្មោះធនាគារដែលបានជ្រើសរើស
+                const method = document.getElementById('payMethod').value;
+                document.getElementById('methodName').innerText = method;
+            }, 2000);
+        }
+    </script>
+</body>
+
+</html>
